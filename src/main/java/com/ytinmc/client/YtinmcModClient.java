@@ -100,6 +100,15 @@ implements ClientModInitializer {
             });
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            com.ytinmc.hologram.HologramManager.tick(client);
+            if (client.screen == null && com.ytinmc.hologram.HologramManager.getCurrentAimTarget() != null) {
+                while (client.options.keyUse.consumeClick()) {
+                    com.ytinmc.hologram.HologramManager.onPlayerInteract(0);
+                }
+                while (client.options.keyAttack.consumeClick()) {
+                    com.ytinmc.hologram.HologramManager.onPlayerInteract(0);
+                }
+            }
             while (openYoutubeKey.consumeClick()) {
                 if (client.screen != null) continue;
                 client.setScreen((Screen)new YoutubeScreen());

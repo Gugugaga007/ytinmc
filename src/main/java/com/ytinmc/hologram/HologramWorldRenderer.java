@@ -35,6 +35,8 @@ import org.joml.Matrix4fc;
 import org.joml.Quaternionfc;
 
 public class HologramWorldRenderer {
+    private static final Identifier AIM_DOT_TEXTURE = Identifier.fromNamespaceAndPath("minecraft", "textures/gui/sprites/hud/crosshair.png");
+
     public static void render(LevelRenderContext context) {
         if (HologramManager.getActiveHolograms().isEmpty()) {
             return;
@@ -45,6 +47,8 @@ public class HologramWorldRenderer {
         }
         Camera camera = client.gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.position();
+        HologramData.RayHit currentAim = HologramManager.getCurrentAimTarget();
+
         for (HologramData holo : HologramManager.getActiveHolograms()) {
             Identifier textureId;
             MCEFBrowser browser = holo.getBrowser();
@@ -70,6 +74,18 @@ public class HologramWorldRenderer {
             builder.addVertex((Matrix4fc)matrix4f, -halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
             builder.addVertex((Matrix4fc)matrix4f, -halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
             builder.addVertex((Matrix4fc)matrix4f, halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
+
+            if (currentAim != null && currentAim.hologram == holo) {
+                float hitLocalX = (float)((currentAim.u - 0.5) * (double)holo.width);
+                float hitLocalY = (float)((0.5 - currentAim.v) * (double)holo.height);
+                float dotSize = 0.06f;
+
+                VertexConsumer dotBuilder = context.bufferSource().getBuffer(RenderTypes.entityCutout(AIM_DOT_TEXTURE));
+                dotBuilder.addVertex((Matrix4fc)matrix4f, hitLocalX - dotSize, hitLocalY - dotSize, 0.01f).setColor(255, 60, 60, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+                dotBuilder.addVertex((Matrix4fc)matrix4f, hitLocalX + dotSize, hitLocalY - dotSize, 0.01f).setColor(255, 60, 60, 255).setUv(0.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+                dotBuilder.addVertex((Matrix4fc)matrix4f, hitLocalX + dotSize, hitLocalY + dotSize, 0.01f).setColor(255, 60, 60, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+                dotBuilder.addVertex((Matrix4fc)matrix4f, hitLocalX - dotSize, hitLocalY + dotSize, 0.01f).setColor(255, 60, 60, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+            }
         }
     }
 }

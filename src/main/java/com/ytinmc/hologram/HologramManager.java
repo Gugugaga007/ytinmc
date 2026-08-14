@@ -58,11 +58,58 @@ public class HologramManager {
         }
     }
 
+    private static HologramData.RayHit currentAimTarget = null;
+
+    public static HologramData.RayHit getCurrentAimTarget() {
+        return currentAimTarget;
+    }
+
+    public static void tick(net.minecraft.client.Minecraft client) {
+        if (client == null || client.player == null) {
+            currentAimTarget = null;
+            return;
+        }
+
+        Vec3 playerPos = client.player.position();
+        for (HologramData data : holograms.values()) {
+            data.updateSpatialAudio(playerPos);
+        }
+
+        Vec3 eyePos = client.player.getEyePosition();
+        Vec3 lookDir = client.player.getViewVector(1.0f);
+        HologramData.RayHit bestHit = null;
+        double bestDist = 12.0;
+
+        for (HologramData data : holograms.values()) {
+            HologramData.RayHit hit = data.raycast(eyePos, lookDir, bestDist);
+            if (hit != null && hit.distance < bestDist) {
+                bestHit = hit;
+                bestDist = hit.distance;
+            }
+        }
+
+        currentAimTarget = bestHit;
+        if (bestHit != null && bestHit.hologram.getBrowser() != null) {
+            int px = (int)(bestHit.u * 1920.0);
+            int py = (int)(bestHit.v * 1080.0);
+            bestHit.hologram.getBrowser().sendMouseMove(px, py);
+        }
+    }
+
+    public static boolean onPlayerInteract(int button) {
+        if (currentAimTarget != null) {
+            currentAimTarget.hologram.clickAt(currentAimTarget.u, currentAimTarget.v, button);
+            return true;
+        }
+        return false;
+    }
+
     public static void clearAll() {
         for (HologramData data : holograms.values()) {
             data.close();
         }
         holograms.clear();
+        currentAimTarget = null;
     }
 }
 
