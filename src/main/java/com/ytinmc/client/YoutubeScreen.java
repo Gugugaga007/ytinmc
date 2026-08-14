@@ -194,17 +194,27 @@ extends Screen {
         return isFullscreen ? this.height : Math.max(50, this.getWindowHeight() - 34);
     }
 
+    private double getDpiScale() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.getWindow() != null) {
+            int scale = mc.getWindow().getGuiScale();
+            return Math.max(1.0, (double)scale);
+        }
+        return 1.0;
+    }
+
     public void injectCustomCss() {
         if (this.browser != null) {
-            String js = "(function() { var s = document.getElementById('ytinmc-style'); if (!s) { s = document.createElement('style'); s.id = 'ytinmc-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = 'html, body, #content, ytd-app { background-color: #0f0f0f !important; min-height: 100% !important; height: 100% !important; } ytd-browse { min-height: 100% !important; }'; if (window.location.href.indexOf('watch') !== -1) { var btn = document.querySelector('button.ytp-size-button'); if (btn && !document.querySelector('ytd-watch-flexy[theater]')) { btn.click(); } } })();";
+            String js = "(function() { var s = document.getElementById('ytinmc-style'); if (!s) { s = document.createElement('style'); s.id = 'ytinmc-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = 'html, body, #content, ytd-app { background-color: #0f0f0f !important; }'; if (window.location.href.indexOf('watch') !== -1) { var btn = document.querySelector('button.ytp-size-button'); if (btn && !document.querySelector('ytd-watch-flexy[theater]')) { btn.click(); } } })();";
             this.browser.executeJavaScript(js, "", 0);
         }
     }
 
     private void resizeBrowser() {
         if (this.browser != null && this.width > 50 && this.height > 50) {
-            int bW = this.getBrowserWidth();
-            int bH = this.getBrowserHeight();
+            double dpi = this.getDpiScale();
+            int bW = (int)Math.round((double)this.getBrowserWidth() * dpi);
+            int bH = (int)Math.round((double)this.getBrowserHeight() * dpi);
             this.browser.resize(Math.max(100, bW), Math.max(100, bH));
             this.injectCustomCss();
         }
@@ -295,11 +305,11 @@ extends Screen {
     }
 
     private int getRelativeBrowserX(double mouseX) {
-        return (int)(mouseX - (double)this.getBrowserX());
+        return (int)Math.round((mouseX - (double)this.getBrowserX()) * this.getDpiScale());
     }
 
     private int getRelativeBrowserY(double mouseY) {
-        return (int)(mouseY - (double)this.getBrowserY());
+        return (int)Math.round((mouseY - (double)this.getBrowserY()) * this.getDpiScale());
     }
 
     public boolean mouseClicked(MouseButtonEvent event, boolean isFocused) {

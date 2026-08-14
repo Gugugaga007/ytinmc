@@ -35,9 +35,11 @@ public class HologramData {
         this.url = url;
     }
 
+    private int injectCountdown = 20;
+
     public void injectAutoPlay() {
         if (this.browser != null) {
-            String autoPlayJs = "(function() { var css = '#masthead-container, #secondary, #below, #comments, #chat, tp-yt-app-drawer, ytd-miniplayer, #guide-wrapper { display: none !important; } #primary, #primary-inner, ytd-player, #player, #player-container, #ytd-player, .html5-video-player, video { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important; z-index: 999999 !important; margin: 0 !important; padding: 0 !important; background: #000 !important; } html, body, ytd-app, #content, #page-manager { overflow: hidden !important; background: #000 !important; margin: 0 !important; padding: 0 !important; }'; var s = document.getElementById('holo-style'); if (!s) { s = document.createElement('style'); s.id = 'holo-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = css; var interval = setInterval(function() { var v = document.querySelector('video'); if (v && v.paused) { v.play().catch(function(e){}); } var btn = document.querySelector('.ytp-large-play-button'); if (btn) btn.click(); }, 500); setTimeout(function() { clearInterval(interval); }, 10000); })();";
+            String autoPlayJs = "(function() { function applyCinema() { var css = '#masthead-container, #masthead, #secondary, #below, #comments, #chat, #actions, ytd-watch-metadata, #info, tp-yt-app-drawer, ytd-miniplayer, #guide-wrapper { display: none !important; } html, body, ytd-app, #content, #page-manager, ytd-watch-flexy, #columns, #primary, #primary-inner { margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: #000 !important; width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important; } #player, #player-container, #player-container-outer, #player-container-inner, #ytd-player, .html5-video-player, video { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important; z-index: 999999 !important; margin: 0 !important; padding: 0 !important; background: #000 !important; object-fit: contain !important; }'; var s = document.getElementById('holo-style'); if (!s) { s = document.createElement('style'); s.id = 'holo-style'; (document.head || document.documentElement).appendChild(s); } if (s.textContent !== css) { s.textContent = css; } var v = document.querySelector('video'); if (v) { if (v.paused) { v.play().catch(function(e){}); } if (v.muted) { v.muted = false; } } var btn = document.querySelector('.ytp-large-play-button') || document.querySelector('.ytp-play-button'); if (btn && v && v.paused) { btn.click(); } var unmute = document.querySelector('.ytp-unmute-button'); if (unmute) { unmute.click(); } } applyCinema(); if (!window.__holo_timer) { window.__holo_timer = setInterval(applyCinema, 500); } })();";
             this.browser.executeJavaScript(autoPlayJs, "", 0);
         }
     }
@@ -105,6 +107,10 @@ public class HologramData {
 
     public void updateSpatialAudio(Vec3 playerPos) {
         if (this.browser == null) return;
+        if (injectCountdown > 0) {
+            injectCountdown--;
+            this.injectAutoPlay();
+        }
         Vec3 holoPos = new Vec3(this.x, this.y, this.z);
         double dist = playerPos.distanceTo(holoPos);
         double maxDist = 32.0;
