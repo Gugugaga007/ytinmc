@@ -205,7 +205,7 @@ extends Screen {
 
     public void injectCustomCss() {
         if (this.browser != null) {
-            String js = "(function() { var s = document.getElementById('ytinmc-style'); if (!s) { s = document.createElement('style'); s.id = 'ytinmc-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = 'html, body, #content, ytd-app { background-color: #0f0f0f !important; min-height: 100vh !important; }'; })();";
+            String js = "(function() { var s = document.getElementById('ytinmc-style'); if (!s) { s = document.createElement('style'); s.id = 'ytinmc-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = 'html, body, #content, ytd-app { background-color: #0f0f0f !important; min-height: 100vh !important; }'; if (window.location.href.indexOf('watch') !== -1) { var btn = document.querySelector('button.ytp-size-button'); if (btn && !document.querySelector('ytd-watch-flexy[theater]')) { btn.click(); } } })();";
             this.browser.executeJavaScript(js, "", 0);
         }
     }

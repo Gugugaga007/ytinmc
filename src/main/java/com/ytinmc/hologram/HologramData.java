@@ -37,7 +37,7 @@ public class HologramData {
 
     public void injectAutoPlay() {
         if (this.browser != null) {
-            String autoPlayJs = "let apInterval = setInterval(() => {   let v = document.querySelector('video');   if (v) {     if (v.paused && !window.hasAutoPlayed) {       v.play();       window.hasAutoPlayed = true;     }     if (window.hasAutoPlayed) clearInterval(apInterval);   } }, 1000);";
+            String autoPlayJs = "(function() { var interval = setInterval(function() { var v = document.querySelector('video'); if (v && v.paused) { v.play().catch(function(e){}); } var btn = document.querySelector('.ytp-large-play-button'); if (btn) btn.click(); }, 500); setTimeout(function() { clearInterval(interval); }, 8000); })();";
             this.browser.executeJavaScript(autoPlayJs, "", 0);
         }
     }
@@ -63,7 +63,36 @@ public class HologramData {
         if (rawUrl == null || rawUrl.isEmpty()) {
             return "https://www.youtube.com";
         }
-        String url = rawUrl;
+        String url = rawUrl.trim();
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
+
+        if (url.contains("youtube.com/watch") || url.contains("youtu.be/") || url.contains("youtube.com/shorts/")) {
+            String videoId = null;
+            if (url.contains("youtube.com/watch")) {
+                int vIdx = url.indexOf("v=");
+                if (vIdx != -1) {
+                    int endIdx = url.indexOf("&", vIdx);
+                    videoId = endIdx != -1 ? url.substring(vIdx + 2, endIdx) : url.substring(vIdx + 2);
+                }
+            } else if (url.contains("youtu.be/")) {
+                int slashIdx = url.indexOf("youtu.be/");
+                String path = url.substring(slashIdx + 9);
+                int qIdx = path.indexOf("?");
+                videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
+            } else if (url.contains("youtube.com/shorts/")) {
+                int slashIdx = url.indexOf("shorts/");
+                String path = url.substring(slashIdx + 7);
+                int qIdx = path.indexOf("?");
+                videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
+            }
+
+            if (videoId != null && !videoId.isEmpty()) {
+                return "https://www.youtube.com/embed/" + videoId + "?autoplay=1&enablejsapi=1&controls=1&rel=0";
+            }
+        }
+
         return url;
     }
 
