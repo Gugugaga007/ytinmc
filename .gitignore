@@ -1,0 +1,55 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+
+# java
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+*.class
+*.txt
+
+# project temp & scratch
+temp_*/
+extract/
+orig_src/
+scratch/
+cfr.jar
+/META-INF/
+/com/
+mcef_version.json
+temp_orig.jar
+FindClass.java
+FindClass.class
+
