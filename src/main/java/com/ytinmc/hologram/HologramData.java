@@ -37,7 +37,7 @@ public class HologramData {
 
     public void injectAutoPlay() {
         if (this.browser != null) {
-            String autoPlayJs = "(function() { var interval = setInterval(function() { var v = document.querySelector('video'); if (v && v.paused) { v.play().catch(function(e){}); } var btn = document.querySelector('.ytp-large-play-button'); if (btn) btn.click(); }, 500); setTimeout(function() { clearInterval(interval); }, 8000); })();";
+            String autoPlayJs = "(function() { var css = '#masthead-container, #secondary, #below, #comments, #chat, tp-yt-app-drawer, ytd-miniplayer, #guide-wrapper { display: none !important; } #primary, #primary-inner, ytd-player, #player, #player-container, #ytd-player, .html5-video-player, video { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important; z-index: 999999 !important; margin: 0 !important; padding: 0 !important; background: #000 !important; } html, body, ytd-app, #content, #page-manager { overflow: hidden !important; background: #000 !important; margin: 0 !important; padding: 0 !important; }'; var s = document.getElementById('holo-style'); if (!s) { s = document.createElement('style'); s.id = 'holo-style'; (document.head || document.documentElement).appendChild(s); } s.textContent = css; var interval = setInterval(function() { var v = document.querySelector('video'); if (v && v.paused) { v.play().catch(function(e){}); } var btn = document.querySelector('.ytp-large-play-button'); if (btn) btn.click(); }, 500); setTimeout(function() { clearInterval(interval); }, 10000); })();";
             this.browser.executeJavaScript(autoPlayJs, "", 0);
         }
     }
@@ -68,29 +68,18 @@ public class HologramData {
             url = "https://" + url;
         }
 
-        if (url.contains("youtube.com/watch") || url.contains("youtu.be/") || url.contains("youtube.com/shorts/")) {
-            String videoId = null;
-            if (url.contains("youtube.com/watch")) {
-                int vIdx = url.indexOf("v=");
-                if (vIdx != -1) {
-                    int endIdx = url.indexOf("&", vIdx);
-                    videoId = endIdx != -1 ? url.substring(vIdx + 2, endIdx) : url.substring(vIdx + 2);
-                }
-            } else if (url.contains("youtu.be/")) {
-                int slashIdx = url.indexOf("youtu.be/");
-                String path = url.substring(slashIdx + 9);
-                int qIdx = path.indexOf("?");
-                videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
-            } else if (url.contains("youtube.com/shorts/")) {
-                int slashIdx = url.indexOf("shorts/");
-                String path = url.substring(slashIdx + 7);
-                int qIdx = path.indexOf("?");
-                videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
-            }
-
-            if (videoId != null && !videoId.isEmpty()) {
-                return "https://www.youtube.com/embed/" + videoId + "?autoplay=1&enablejsapi=1&controls=1&rel=0";
-            }
+        if (url.contains("youtu.be/")) {
+            int slashIdx = url.indexOf("youtu.be/");
+            String path = url.substring(slashIdx + 9);
+            int qIdx = path.indexOf("?");
+            String videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
+            return "https://www.youtube.com/watch?v=" + videoId;
+        } else if (url.contains("youtube.com/shorts/")) {
+            int slashIdx = url.indexOf("shorts/");
+            String path = url.substring(slashIdx + 7);
+            int qIdx = path.indexOf("?");
+            String videoId = qIdx != -1 ? path.substring(0, qIdx) : path;
+            return "https://www.youtube.com/watch?v=" + videoId;
         }
 
         return url;

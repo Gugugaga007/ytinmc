@@ -70,29 +70,32 @@ public class HologramManager {
             return;
         }
 
-        Vec3 playerPos = client.player.position();
-        for (HologramData data : holograms.values()) {
-            data.updateSpatialAudio(playerPos);
-        }
-
-        Vec3 eyePos = client.player.getEyePosition();
-        Vec3 lookDir = client.player.getViewVector(1.0f);
-        HologramData.RayHit bestHit = null;
-        double bestDist = 12.0;
-
-        for (HologramData data : holograms.values()) {
-            HologramData.RayHit hit = data.raycast(eyePos, lookDir, bestDist);
-            if (hit != null && hit.distance < bestDist) {
-                bestHit = hit;
-                bestDist = hit.distance;
+        try {
+            Vec3 playerPos = client.player.position();
+            for (HologramData data : holograms.values()) {
+                data.updateSpatialAudio(playerPos);
             }
-        }
 
-        currentAimTarget = bestHit;
-        if (bestHit != null && bestHit.hologram.getBrowser() != null) {
-            int px = (int)(bestHit.u * 1920.0);
-            int py = (int)(bestHit.v * 1080.0);
-            bestHit.hologram.getBrowser().sendMouseMove(px, py);
+            Vec3 eyePos = client.player.getEyePosition();
+            Vec3 lookDir = client.player.getViewVector(1.0f);
+            HologramData.RayHit bestHit = null;
+            double bestDist = 12.0;
+
+            for (HologramData data : holograms.values()) {
+                HologramData.RayHit hit = data.raycast(eyePos, lookDir, bestDist);
+                if (hit != null && hit.distance < bestDist) {
+                    bestHit = hit;
+                    bestDist = hit.distance;
+                }
+            }
+
+            currentAimTarget = bestHit;
+            if (bestHit != null && bestHit.hologram.getBrowser() != null) {
+                int px = (int)(bestHit.u * 1920.0);
+                int py = (int)(bestHit.v * 1080.0);
+                bestHit.hologram.getBrowser().sendMouseMove(px, py);
+            }
+        } catch (Exception ignored) {
         }
     }
 
