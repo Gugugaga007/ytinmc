@@ -57,7 +57,28 @@ git clone https://github.com/Gugugaga007/ytinmc.git
 
 ---
 
+## 📁 Project Architecture & Structure
+
+```
+ytinmc/
+├── src/main/java/com/ytinmc/
+│   ├── client/       # In-Game browser GUI screens (YoutubeScreen, PipEditScreen), DPI scaling & MCEF texture integration
+│   ├── hologram/     # 3D in-world cinema screens, raycasting, and 3D spatial audio distance falloff
+│   ├── network/      # Fabric custom packet payloads & multiplayer WatchParty network synchronization
+│   ├── command/      # In-game chat commands (/hologram, /watchparty)
+│   └── mixin/        # Fabric Mixin hooks for client lifecycle & rendering
+├── src/main/resources/
+│   ├── assets/       # Mod icons, textures, and assets
+│   └── fabric.mod.json # Mod metadata, entrypoints, and dependency declarations
+├── libs/             # Pre-compiled MCEF 26.1.2 framework dependencies
+├── CHANGELOG.md      # Detailed version release notes & bug fixes
+└── CONTRIBUTING.md   # Developer setup & contribution guidelines
+```
+
+---
+
 ## 📄 License
 
 Licensed under the [MIT License](LICENSE).
+
 
