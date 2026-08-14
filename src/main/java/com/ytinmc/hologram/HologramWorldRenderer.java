@@ -66,14 +66,14 @@ public class HologramWorldRenderer {
             float halfH = scaleY / 2.0f;
             int overlay = 655360;
             int light = 0xF000F0;
-            builder.addVertex((Matrix4fc)matrix4f, -halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, -halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, -halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, -halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
-            builder.addVertex((Matrix4fc)matrix4f, halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, -halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, -halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, 1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, -halfW, -halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 1.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, -halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(0.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
+            builder.addVertex((Matrix4fc)matrix4f, halfW, halfH, 0.0f).setColor(255, 255, 255, 255).setUv(1.0f, 0.0f).setOverlay(overlay).setLight(light).setNormal(pose, 0.0f, 0.0f, -1.0f);
 
             if (currentAim != null && currentAim.hologram == holo) {
                 float hitLocalX = (float)((currentAim.u - 0.5) * (double)holo.width);

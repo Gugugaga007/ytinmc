@@ -133,20 +133,26 @@ public class HologramData {
 
     public RayHit raycast(Vec3 origin, Vec3 dir, double maxDist) {
         Vec3 center = new Vec3(this.x, this.y, this.z);
-        double yawRad = Math.toRadians(-this.yaw);
-        double pitchRad = Math.toRadians(-this.pitch);
 
-        Vec3 right = new Vec3(Math.cos(yawRad), 0, Math.sin(yawRad));
-        Vec3 forward = new Vec3(-Math.sin(yawRad) * Math.cos(pitchRad), Math.sin(pitchRad), Math.cos(yawRad) * Math.cos(pitchRad));
-        Vec3 up = right.cross(forward);
+        org.joml.Quaternionf q = new org.joml.Quaternionf();
+        q.rotateY((float)Math.toRadians(this.yaw));
+        q.rotateX((float)Math.toRadians(this.pitch));
 
-        double denom = dir.dot(forward);
+        org.joml.Vector3f r = new org.joml.Vector3f(1.0f, 0.0f, 0.0f).rotate(q);
+        org.joml.Vector3f uVec = new org.joml.Vector3f(0.0f, 1.0f, 0.0f).rotate(q);
+        org.joml.Vector3f f = new org.joml.Vector3f(0.0f, 0.0f, 1.0f).rotate(q);
+
+        Vec3 right = new Vec3((double)r.x(), (double)r.y(), (double)r.z());
+        Vec3 up = new Vec3((double)uVec.x(), (double)uVec.y(), (double)uVec.z());
+        Vec3 normal = new Vec3((double)f.x(), (double)f.y(), (double)f.z());
+
+        double denom = dir.dot(normal);
         if (Math.abs(denom) < 1e-6) {
             return null;
         }
 
-        double t = center.subtract(origin).dot(forward) / denom;
-        if (t < 0 || t > maxDist) {
+        double t = center.subtract(origin).dot(normal) / denom;
+        if (t < 0.0 || t > maxDist) {
             return null;
         }
 
@@ -156,12 +162,12 @@ public class HologramData {
         double localX = toHit.dot(right);
         double localY = toHit.dot(up);
 
-        double halfW = this.width / 2.0;
-        double halfH = this.height / 2.0;
+        double halfW = (double)this.width / 2.0;
+        double halfH = (double)this.height / 2.0;
 
         if (Math.abs(localX) <= halfW && Math.abs(localY) <= halfH) {
-            double u = (localX / this.width) + 0.5;
-            double v = 0.5 - (localY / this.height);
+            double u = (localX / (double)this.width) + 0.5;
+            double v = 0.5 - (localY / (double)this.height);
             return new RayHit(this, t, u, v, hitPos);
         }
 
